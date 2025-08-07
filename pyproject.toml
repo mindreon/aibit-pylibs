@@ -1,0 +1,35 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pylibs"
+version = "0.0.1"
+authors = [
+  { name="aliao", email="zju.pigeon@gmail.com" },
+]
+description = "A collection of python libraries"
+readme = "README.md"
+requires-python = ">=3.10"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+dependencies = [
+    "gitpython>=3.1.45",
+    "httpx>=0.28.1",
+    "structlog>=25.4.0",
+    "rarfile>=4.0",
+    "py7zr>=0.20.0",
+    "pydantic>=2.11.7",
+    "dvc>=3.61.0",
+    "dvc-s3>=3.2.2",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/mindreon/pylibs"
+"Bug Tracker" = "https://github.com/mindreon/pylibs/issues"
+
+[tool.setuptools.packages.find]
+where = ["."]

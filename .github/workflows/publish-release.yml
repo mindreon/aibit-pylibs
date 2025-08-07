@@ -1,0 +1,53 @@
+name: Publish Release to Pages and GitHub Releases
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write # 需要写权限来创建 GitHub Release
+  pages: write
+  id-token: write
+
+jobs:
+  build-and-publish-release:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0 # 同样需要 fetch-depth: 0
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.9'
+
+    - name: Install build dependencies
+      run: python -m pip install --upgrade pip build
+
+    - name: Build package with release version
+      run: python -m build
+
+    - name: Generate PEP 503 repository for releases
+      run: |
+        pip install dir-to-html
+        # 关键: 将索引生成在 gh-pages/ 根目录下
+        mkdir -p gh-pages/
+        dir-to-html dist/ --output-dir gh-pages/
+
+    - name: Upload GitHub Pages artifact
+      uses: actions/upload-pages-artifact@v3
+      with:
+        path: gh-pages/
+
+    - name: Deploy to GitHub Pages
+      id: deployment
+      uses: actions/deploy-pages@v4
+      
+    - name: Create GitHub Release
+      uses: softprops/action-gh-release@v2
+      with:
+        files: dist/*
