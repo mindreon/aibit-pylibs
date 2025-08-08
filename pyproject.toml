@@ -3,7 +3,7 @@ requires = ["setuptools>=61.0"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "pylibs"
+name = "aibit-pylibs"
 version = "0.0.1"
 authors = [
   { name="aliao", email="zju.pigeon@gmail.com" },
@@ -28,8 +28,11 @@ dependencies = [
 ]
 
 [project.urls]
-"Homepage" = "https://github.com/mindreon/pylibs"
-"Bug Tracker" = "https://github.com/mindreon/pylibs/issues"
+"Homepage" = "https://github.com/mindreon/aibit-pylibs"
+"Bug Tracker" = "https://github.com/mindreon/aibit-pylibs/issues"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
 
 [tool.setuptools.packages.find]
-where = ["."]
+where = ["src"]

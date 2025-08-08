@@ -1,2 +1,2 @@
-# pylibs
+# aibit-pylibs
 common python libraries
