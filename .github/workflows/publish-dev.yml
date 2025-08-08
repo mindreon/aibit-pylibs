@@ -14,9 +14,12 @@ jobs:
   build-and-publish-dev:
     runs-on: ubuntu-latest
 
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
     steps:
     - name: Checkout repository
-      # fetch-depth: 0 是必须的, 这样 setuptools-scm 才能获取完整的 git 历史来计算版本
       uses: actions/checkout@v4
       with:
         fetch-depth: 0
