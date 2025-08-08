@@ -27,18 +27,20 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v5
       with:
-        python-version: '3.9'
+        python-version: '3.10'
 
     - name: Install build dependencies
-      run: python -m pip install --upgrade pip build
+      run: python -m pip install --upgrade pip build wheel simple503 twine
 
     - name: Build package with release version
       run: python -m build
 
     - name: Generate PEP 503 repository for releases
       run: |
-        pip install simple503
         simple503 dist gh-pages/
+
+    - name: Configure GitHub Pages
+      uses: actions/configure-pages@v5
 
     - name: Upload GitHub Pages artifact
       uses: actions/upload-pages-artifact@v3
@@ -53,3 +55,10 @@ jobs:
       uses: softprops/action-gh-release@v2
       with:
         files: dist/*
+
+    - name: Publish to PyPI (optional)
+      if: startsWith(github.ref, 'refs/tags/v')
+      uses: pypa/gh-action-pypi-publish@v1.10.2
+      with:
+        user: __token__
+        password: ${{ secrets.PYPI_API_TOKEN }}
