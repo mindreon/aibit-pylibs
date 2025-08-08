@@ -37,7 +37,7 @@ jobs:
 
     - name: Generate PEP 503 repository for releases
       run: |
-        simple503 dist gh-pages/
+        simple503 --base-url "/aibit-pylibs/" dist gh-pages/
 
     - name: Configure GitHub Pages
       uses: actions/configure-pages@v5
