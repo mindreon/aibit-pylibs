@@ -33,10 +33,9 @@ jobs:
 
     - name: Generate PEP 503 repository for releases
       run: |
-        pip install dir-to-html
-        # 关键: 将索引生成在 gh-pages/ 根目录下
+        pip install pypi-simple-generate
         mkdir -p gh-pages/
-        dir-to-html dist/ --output-dir gh-pages/
+        pypi-simple-generate dist/ --output-dir gh-pages/
 
     - name: Upload GitHub Pages artifact
       uses: actions/upload-pages-artifact@v3
