@@ -34,7 +34,7 @@ jobs:
     - name: Generate PEP 503 repository for releases
       run: |
         pip install simple503
-        simple503 build dist --dest gh-pages/
+        simple503 dist gh-pages/
 
     - name: Upload GitHub Pages artifact
       uses: actions/upload-pages-artifact@v3
