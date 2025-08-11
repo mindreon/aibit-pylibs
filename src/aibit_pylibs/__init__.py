@@ -1,17 +1,24 @@
 from .dvc_utils import DvcUtils
-from .file_util import DirectoryContent, FileItem, FileTree, FileTreeNode, FileUtils
-from .git_utils import GitUtils
+from .file_util import FileTree, FileTreeNode, FileUtils
+from .git_utils import GitRepoUtils
 from .gitea_provider import GiteaProvider
-from .logging import get_logger
+from .logging import bind_context, clear_context, configure_logging, get_logger
+from .retry import (CircuitBreaker, RetryConfig, retry_with_backoff,
+                    with_circuit_breaker)
 
 __all__ = [
     "FileUtils",
-    "GitUtils",
+    "GitRepoUtils",
     "GiteaProvider",
     "get_logger",
+    "configure_logging",
+    "bind_context",
+    "clear_context",
     "DvcUtils",
-    "FileItem",
-    "DirectoryContent",
     "FileTree",
     "FileTreeNode",
+    "RetryConfig",
+    "retry_with_backoff",
+    "CircuitBreaker",
+    "with_circuit_breaker",
 ]

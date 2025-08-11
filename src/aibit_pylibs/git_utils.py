@@ -1,10 +1,14 @@
 import os
+from datetime import datetime
 
-import git
 from git import Repo
 
+from .logging import get_logger
 
-class GitUtils:
+logger = get_logger(__name__)
+
+
+class GitRepoUtils:
     """
     一个用于操作 Git 仓库的工具类
     """
@@ -85,11 +89,21 @@ class GitUtils:
                 # 更新远程仓库URL
                 remote = self.repo.remote(remote_name)
                 remote.set_url(remote_url)
-                print(f"Updated remote {remote_name} URL to {remote_url}")
+                logger.info(
+                    "Updated remote repository URL",
+                    action="update_remote",
+                    remote_name=remote_name,
+                    url=remote_url,
+                )
             else:
                 # 添加新的远程仓库
                 self.repo.create_remote(remote_name, remote_url)
-                print(f"Added remote {remote_name}: {remote_url}")
+                logger.info(
+                    "Added remote repository",
+                    action="add_remote",
+                    remote_name=remote_name,
+                    url=remote_url,
+                )
         except Exception as e:
             raise Exception(f"添加远程仓库失败: {e}")
 
@@ -102,7 +116,12 @@ class GitUtils:
         try:
             remote = self.repo.remote(remote_name)
             remote.push(branch_name)
-            print(f"Successfully pushed to {remote_name}/{branch_name}")
+            logger.info(
+                "Successfully pushed to remote",
+                action="push",
+                remote_name=remote_name,
+                branch_name=branch_name,
+            )
         except Exception as e:
             raise Exception(f"推送失败: {e}")
 
@@ -115,7 +134,12 @@ class GitUtils:
         try:
             remote = self.repo.remote(remote_name)
             remote.pull(branch_name)
-            print(f"Successfully pulled from {remote_name}/{branch_name}")
+            logger.info(
+                "Successfully pulled from remote",
+                action="pull",
+                remote_name=remote_name,
+                branch_name=branch_name,
+            )
         except Exception as e:
             raise Exception(f"拉取失败: {e}")
 
@@ -143,17 +167,27 @@ class GitUtils:
         try:
             remote = self.repo.remote(remote_name)
             remote.push(tag_name)
-            print(f"Pushed tag {tag_name} to {remote_name}")
+            logger.info(
+                "Pushed tag to remote",
+                action="push_tag",
+                tag_name=tag_name,
+                remote_name=remote_name,
+            )
         except Exception as e:
             raise Exception(f"推送标签失败: {e}")
 
     def list_tags(self):
         """
-        列出所有标签
+        列出所有标签（按时间排序）
         """
         try:
-            tags = [tag.name for tag in self.repo.tags]
-            return sorted(tags, reverse=True)  # 按时间倒序
+            # 按提交时间排序，而不是名称
+            tags = sorted(
+                self.repo.tags,
+                key=lambda tag: tag.commit.committed_datetime,
+                reverse=True,
+            )
+            return [tag.name for tag in tags]
         except Exception as e:
             raise Exception(f"获取标签列表失败: {e}")
 
@@ -164,7 +198,7 @@ class GitUtils:
         """
         try:
             self.repo.git.checkout(tag_name)
-            print(f"Checked out to tag: {tag_name}")
+            logger.info("Checked out to tag", action="checkout_tag", tag_name=tag_name)
         except Exception as e:
             raise Exception(f"切换标签失败: {e}")
 
@@ -185,7 +219,11 @@ class GitUtils:
         try:
             new_branch = self.repo.create_head(branch_name)
             new_branch.checkout()
-            print(f"Created and checked out to branch: {branch_name}")
+            logger.info(
+                "Created and checked out to branch",
+                action="create_branch",
+                branch_name=branch_name,
+            )
             return new_branch
         except Exception as e:
             raise Exception(f"创建分支失败: {e}")
@@ -232,7 +270,12 @@ class GitUtils:
         """
         try:
             cloned_repo = Repo.clone_from(remote_url, local_path)
-            print(f"Successfully cloned {remote_url} to {local_path}")
+            logger.info(
+                "Successfully cloned repository",
+                action="clone_repo",
+                remote_url=remote_url,
+                local_path=local_path,
+            )
             return cloned_repo
         except Exception as e:
             raise Exception(f"克隆仓库失败: {e}")
