@@ -3,8 +3,12 @@ from .file_util import FileTree, FileTreeNode, FileUtils
 from .git_utils import GitRepoUtils
 from .gitea_provider import GiteaProvider
 from .logging import bind_context, clear_context, configure_logging, get_logger
-from .retry import (CircuitBreaker, RetryConfig, retry_with_backoff,
-                    with_circuit_breaker)
+from .retry import (
+    CircuitBreaker,
+    RetryConfig,
+    retry_with_backoff,
+    with_circuit_breaker,
+)
 
 __all__ = [
     "FileUtils",

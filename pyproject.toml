@@ -27,6 +27,31 @@ dependencies = [
     "dvc-s3>=3.2.2",
 ]
 
+[project.optional-dependencies]
+dev = [
+    "black>=23.0.0",
+]
+
+[tool.black]
+line-length = 88
+target-version = ['py310']
+include = '\.pyi?$'
+extend-exclude = '''
+/(
+  # directories
+  \.eggs
+  | \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | _build
+  | buck-out
+  | build
+  | dist
+)/
+'''
+
 [project.urls]
 "Homepage" = "https://github.com/mindreon/aibit-pylibs"
 "Bug Tracker" = "https://github.com/mindreon/aibit-pylibs/issues"

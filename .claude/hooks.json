@@ -1,0 +1,15 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|MultiEdit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "black . --quiet 2>/dev/null || true"
+          }
+        ]
+      }
+    ]
+  }
+}
