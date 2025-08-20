@@ -1,4 +1,4 @@
-from .dvc_utils import DvcUtils
+from .dvc_utils import DVCUtils
 from .file_utils import FileTree, FileTreeNode, FileUtils
 from .git_utils import GitRepoUtils
 from .gitea_provider import GiteaProvider
@@ -18,7 +18,7 @@ __all__ = [
     "configure_logging",
     "bind_context",
     "clear_context",
-    "DvcUtils",
+    "DVCUtils",
     "FileTree",
     "FileTreeNode",
     "RetryConfig",

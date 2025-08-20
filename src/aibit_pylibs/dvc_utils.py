@@ -17,7 +17,7 @@ from .logging import get_logger
 logger = get_logger(__name__)
 
 
-class DvcUtils:
+class DVCUtils:
     def __init__(
         self,
         gitea_provider: GiteaProvider,
