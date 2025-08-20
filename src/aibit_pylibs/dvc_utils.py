@@ -9,7 +9,7 @@ from dvc.api import DVCFileSystem
 from dvc.repo import Repo as DvcRepo
 from git import Repo as GitRepo
 
-from .file_util import FileTree, FileTreeNode, FileUtils
+from .file_utils import FileTree, FileTreeNode, FileUtils
 from .git_utils import GitRepoUtils
 from .gitea_provider import GiteaProvider
 from .logging import get_logger
