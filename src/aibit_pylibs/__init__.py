@@ -3,7 +3,7 @@ from .file_utils import FileTree, FileTreeNode, FileUtils
 from .git_utils import GitRepoUtils
 from .gitea_provider import GiteaProvider
 from .logging import bind_context, clear_context, configure_logging, get_logger
-from .auth import get_jwt_user, create_user_token, SECRET_KEY, ALGORITHM, ACCESS_TOKEN_EXPIRE_HOURS
+from .auth import get_jwt_user, create_user_token, SECRET_KEY, ALGORITHM, ACCESS_TOKEN_EXPIRE_HOURS, TokenData
 from .retry import (
     CircuitBreaker,
     RetryConfig,
@@ -28,6 +28,7 @@ __all__ = [
     "with_circuit_breaker",
     "get_jwt_user",
     "create_user_token",
+    "TokenData",
     "SECRET_KEY",
     "ALGORITHM",
     "ACCESS_TOKEN_EXPIRE_HOURS",
