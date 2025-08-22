@@ -250,6 +250,24 @@ class DVCUtils:
             )
             raise Exception(f"Failed to create version {version_tag}: {e}")
 
+    async def clone_dvc_repo(self, repo_url: str, version_tag: str, dest_dir: str) -> DvcRepo:
+        """克隆DVC仓库"""
+        try:
+            repo = GitRepo.clone_from(repo_url, dest_dir)
+            repo.git.checkout(version_tag)
+            dvc_repo = DvcRepo(dest_dir, rev=version_tag)
+            dvc_repo.pull()
+        except Exception as e:
+            logger.error(
+                "Failed to clone DVC repository",
+                action="clone_dvc_repo",
+                repo_url=repo_url,
+                version_tag=version_tag,
+                error=str(e),
+                exc_info=True,
+            )
+            raise Exception(f"Failed to clone DVC repository {repo_url}: {e}")
+
     async def get_versions(self, repo_url: str) -> List[str]:
         """从Git仓库获取版本标签列表"""
         try:
