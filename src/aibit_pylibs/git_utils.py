@@ -262,7 +262,8 @@ class GitRepoUtils:
         except Exception as e:
             raise Exception(f"获取文件状态失败: {e}")
 
-    def clone_repo(self, remote_url: str, local_path: str):
+    @staticmethod
+    def clone_repo(remote_url: str, local_path: str):
         """
         克隆远程仓库
         :param remote_url: 远程仓库URL

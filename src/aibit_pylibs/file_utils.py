@@ -83,7 +83,7 @@ class FileUtils:
                         raise Exception(f"检测到路径遍历攻击: {member.name}")
 
     @staticmethod
-    def extract_file(file_path: str, extract_to: Path) -> bool:
+    def uncompress_file(file_path: str, extract_to: Path) -> bool:
         """
         解压文件到指定目录，支持多种格式
         :param file_path: 要解压的文件路径
@@ -108,9 +108,7 @@ class FileUtils:
                 with zipfile.ZipFile(file_path, "r") as zip_ref:
                     # 安全解压，防止路径遍历
                     for member in zip_ref.filelist:
-                        # 构建安全的完整路径
                         full_path = extract_to / member.filename
-                        # 确保路径在目标目录内
                         if not str(full_path).startswith(str(extract_to)):
                             raise Exception(f"路径遍历攻击检测: {member.filename}")
 
@@ -153,9 +151,7 @@ class FileUtils:
                     mode = "r:xz"
 
                 with tarfile.open(file_path, mode) as tar_ref:
-                    # 安全解压，防止路径遍历
                     for member in tar_ref.getmembers():
-                        # 构建安全的完整路径
                         full_path = extract_to / member.name
                         # 确保路径在目标目录内
                         if not str(full_path).startswith(str(extract_to)):
@@ -174,9 +170,7 @@ class FileUtils:
 
             elif suffix in [".rar"]:
                 with rarfile.RarFile(file_path, "r") as rar_ref:
-                    # 安全解压，防止路径遍历
                     for info in rar_ref.infolist():
-                        # 构建安全的完整路径
                         full_path = extract_to / info.filename
                         # 确保路径在目标目录内
                         if not str(full_path).startswith(str(extract_to)):
@@ -193,9 +187,7 @@ class FileUtils:
 
             elif suffix in [".7z"]:
                 with py7zr.SevenZipFile(file_path, mode="r") as seven_zip_ref:
-                    # 安全解压，防止路径遍历
                     for info in seven_zip_ref.list():
-                        # 构建安全的完整路径
                         full_path = extract_to / info.filename
                         # 确保路径在目标目录内
                         if not str(full_path).startswith(str(extract_to)):
@@ -211,7 +203,6 @@ class FileUtils:
                     )
 
             else:
-                # 如果不是压缩文件，直接复制到目标目录
                 shutil.copy2(file_path, extract_to / file_path.name)
                 logger.info(
                     "File copied",
@@ -232,6 +223,91 @@ class FileUtils:
                 exc_info=True,
             )
             raise Exception(f"解压文件失败 {file_path}: {e}")
+
+    @staticmethod
+    def _compress_zip(source_path: str, output_path: str):
+        """使用 zip 格式进行压缩"""
+        with zipfile.ZipFile(output_path, "w", zipfile.ZIP_DEFLATED) as zipf:
+            if os.path.isfile(source_path):
+                # 处理单个文件
+                arcname = os.path.basename(source_path)
+                zipf.write(source_path, arcname=arcname)
+            elif os.path.isdir(source_path):
+                # 处理文件夹
+                for root, dirs, files in os.walk(source_path):
+                    for file in files:
+                        file_path = os.path.join(root, file)
+                        arcname = os.path.relpath(file_path, start=source_path)
+                        zipf.write(file_path, arcname=arcname)
+
+    @staticmethod
+    def _compress_tar(source_path: str, output_path: str, mode: str = "w:gz"):
+        """使用 tar 系列格式进行压缩 (如 .tar.gz, .tar.bz2)"""
+        with tarfile.open(output_path, mode) as tarf:
+            if os.path.isfile(source_path):
+                arcname = os.path.basename(source_path)
+                tarf.add(source_path, arcname=arcname)
+            elif os.path.isdir(source_path):
+                for root, dirs, files in os.walk(source_path):
+                    for file in files:
+                        file_path = os.path.join(root, file)
+                        arcname = os.path.relpath(file_path, start=source_path)
+                        tarf.add(file_path, arcname=arcname)
+
+    @staticmethod
+    def compress_file(source_path: str, output_path: str):
+        """
+        根据输出文件的后缀名，自动选择压缩方式。
+
+        :param source_path: 要压缩的源文件或文件夹的路径。
+        :param output_path: 输出的压缩文件的路径。
+        """
+        if not os.path.exists(source_path):
+            logger.error(
+                f"source path not found",
+                action="compress_file",
+                source_path=source_path,
+                output_path=output_path,
+            )
+            return
+
+        logger.info(
+            f"begin to compress",
+            action="compress_file",
+            source_path=source_path,
+            output_path=output_path,
+        )
+
+        suffix = output_path.split(".")[-1].lower()
+
+        try:
+            if suffix == "zip":
+                FileUtils._compress_zip(source_path, output_path)
+            elif suffix == "tar":
+                FileUtils._compress_tar(source_path, output_path, mode="w:")
+            elif suffix == "tar.gz":
+                FileUtils._compress_tar(source_path, output_path, mode="w:gz")
+            elif suffix == "tar.bz2":
+                FileUtils._compress_tar(source_path, output_path, mode="w:bz2")
+            elif suffix == "tar.xz":
+                FileUtils._compress_tar(source_path, output_path, mode="w:xz")
+            else:
+                logger.warning(f"unsupported suffix", suffix=suffix)
+                return
+
+            logger.info(
+                f"compress success",
+                action="compress_file",
+                source_path=source_path,
+                output_path=output_path,
+            )
+        except Exception as e:
+            logger.error(
+                f"compress failed",
+                action="compress_file",
+                source_path=source_path,
+                output_path=output_path,
+            )
 
     @staticmethod
     def calculate_directory_size(directory: Path) -> int:

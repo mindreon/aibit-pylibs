@@ -2,8 +2,15 @@ from .dvc_utils import DVCUtils
 from .file_utils import FileTree, FileTreeNode, FileUtils
 from .git_utils import GitRepoUtils
 from .gitea_provider import GiteaProvider
-from .logging import bind_context, clear_context, configure_logging, get_logger
-from .auth import get_jwt_user, create_user_token, SECRET_KEY, ALGORITHM, ACCESS_TOKEN_EXPIRE_HOURS, TokenData
+from .logging import get_logger
+from .auth import (
+    get_jwt_user,
+    create_user_token,
+    SECRET_KEY,
+    ALGORITHM,
+    ACCESS_TOKEN_EXPIRE_HOURS,
+    TokenData,
+)
 from .retry import (
     CircuitBreaker,
     RetryConfig,
@@ -16,9 +23,6 @@ __all__ = [
     "GitRepoUtils",
     "GiteaProvider",
     "get_logger",
-    "configure_logging",
-    "bind_context",
-    "clear_context",
     "DVCUtils",
     "FileTree",
     "FileTreeNode",

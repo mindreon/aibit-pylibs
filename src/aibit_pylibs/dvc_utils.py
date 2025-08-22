@@ -56,7 +56,7 @@ class DVCUtils:
 
                 # 1. 解压用户上传的文件到临时目录
                 extract_dir = Path(f"{temp_base}/{id}/data")
-                FileUtils.extract_file(file_path, extract_dir)
+                FileUtils.uncompress_file(file_path, extract_dir)
 
                 # 计算解压后的文件统计信息
                 total_files = FileUtils.count_files_in_directory(extract_dir)
